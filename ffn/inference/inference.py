@@ -568,11 +568,13 @@ class Canvas(object):
       self.seed_policy.set_state(self._seed_policy_state)
       self._seed_policy_state = None
 
+    iter_count = 0
     with timer_counter(self.counters, 'segment_all'):
       mbd = self.options.min_boundary_dist
       mbd = np.array([mbd.z, mbd.y, mbd.x])
 
       for pos in TimedIter(self.seed_policy, self.counters, 'seed-policy'):
+        iter_count += 1
         # When starting a new segment the move_threshold on the probability
         # should be ignored when determining if the position is valid.
         if not (self.is_valid_pos(pos, ignore_move_threshold=True)
@@ -591,7 +593,7 @@ class Canvas(object):
           self.segmentation[pos] = -1
           continue
 
-        self.log_info('Starting segmentation at %r (zyx)', pos)
+        self.log_info('Starting segmentation %d at %r (zyx)', iter_count, pos)
 
         # Try segmentation.
         seg_start = time.time()

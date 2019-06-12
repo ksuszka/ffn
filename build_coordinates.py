@@ -20,6 +20,8 @@ import h5py
 import numpy as np
 import tensorflow as tf
 
+from tqdm.auto import tqdm
+
 FLAGS = flags.FLAGS
 
 flags.DEFINE_list('partition_volumes', None,
@@ -92,7 +94,7 @@ def main(argv):
       tf.python_io.TFRecordCompressionType.GZIP)
   with tf.python_io.TFRecordWriter(FLAGS.coordinate_output,
                                    options=record_options) as writer:
-    for i, coord_idx in indices:
+    for i, coord_idx in tqdm(indices):
       z, y, x = np.unravel_index(coord_idx, vol_shapes[i])
 
       coord = tf.train.Example(features=tf.train.Features(feature=dict(
